@@ -1,12 +1,18 @@
 import React, { useEffect } from 'react';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { AuthProvider, useAuth } from '../context/AuthContext';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Platform } from 'react-native';
 
 const InitialLayout = () => {
   const { isActivated, balance, isLoading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      document.body.style.backgroundColor = '#0a0a0f';
+    }
+  }, []);
 
   useEffect(() => {
     if (isLoading) return;
