@@ -15,26 +15,27 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import { categorizeExpense } from '../lib/groq';
+import { Ionicons } from '@expo/vector-icons';
 
 const EXPENSE_CATEGORIES = [
-  { emoji: '🍔', name: 'Food' },
-  { emoji: '🚗', name: 'Transport' },
-  { emoji: '🛒', name: 'Shopping' },
-  { emoji: '💊', name: 'Health' },
-  { emoji: '🎬', name: 'Entertainment' },
-  { emoji: '📱', name: 'Bills' },
-  { emoji: '🏠', name: 'Rent' },
-  { emoji: '📚', name: 'Education' },
-  { emoji: '✈️', name: 'Travel' },
-  { emoji: '🎁', name: 'Other' },
+  { icon: 'fast-food', name: 'Food' },
+  { icon: 'car', name: 'Transport' },
+  { icon: 'cart', name: 'Shopping' },
+  { icon: 'medkit', name: 'Health' },
+  { icon: 'film', name: 'Entertainment' },
+  { icon: 'receipt', name: 'Bills' },
+  { icon: 'home', name: 'Rent' },
+  { icon: 'school', name: 'Education' },
+  { icon: 'airplane', name: 'Travel' },
+  { icon: 'gift', name: 'Other' },
 ];
 
 const INCOME_CATEGORIES = [
-  { emoji: '💼', name: 'Salary' },
-  { emoji: '💰', name: 'Freelance' },
-  { emoji: '📈', name: 'Investment' },
-  { emoji: '🎁', name: 'Gift' },
-  { emoji: '💵', name: 'Other' },
+  { icon: 'cash', name: 'Salary' },
+  { icon: 'laptop', name: 'Freelance' },
+  { icon: 'trending-up', name: 'Investment' },
+  { icon: 'gift', name: 'Gift' },
+  { icon: 'wallet', name: 'Other' },
 ];
 
 export default function AddTransactionScreen() {
@@ -219,7 +220,7 @@ export default function AddTransactionScreen() {
                     type === 'expense' && styles.toggleTextActiveExpense,
                   ]}
                 >
-                  💸 Expense
+                  <Ionicons name="arrow-up-circle-outline" size={16} /> Expense
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -233,7 +234,7 @@ export default function AddTransactionScreen() {
                     type === 'income' && styles.toggleTextActiveIncome,
                   ]}
                 >
-                  💰 Income
+                  <Ionicons name="arrow-down-circle-outline" size={16} /> Income
                 </Text>
               </TouchableOpacity>
             </View>
@@ -241,7 +242,7 @@ export default function AddTransactionScreen() {
             {/* AI Auto-Categorization */}
             {type === 'expense' && (
               <View style={styles.aiSection}>
-                <Text style={styles.sectionLabel}>✨ AI Magic Fill</Text>
+                <Text style={styles.sectionLabel}><Ionicons name="sparkles" size={14} color="#a855f7" /> AI Magic Fill</Text>
                 <View style={styles.aiInputContainer}>
                   <TextInput
                     style={styles.aiInput}
@@ -326,7 +327,7 @@ export default function AddTransactionScreen() {
                     onPress={() => setCategory(cat.name)}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
+                    <Ionicons name={cat.icon as any} size={24} color={category === cat.name ? '#ffffff' : '#6b6b7e'} style={{ marginBottom: 6 }} />
                     <Text
                       style={[
                         styles.categoryName,
@@ -359,7 +360,7 @@ export default function AddTransactionScreen() {
             <View style={styles.dateSection}>
               <Text style={styles.sectionLabel}>Date</Text>
               <View style={styles.dateDisplay}>
-                <Text style={styles.dateIcon}>📅</Text>
+                <Ionicons name="calendar-outline" size={20} color="#8b8b9e" />
                 <Text style={styles.dateText}>{todayFormatted}</Text>
               </View>
             </View>
@@ -505,6 +506,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
   currencySymbol: {
     fontSize: 44,
@@ -515,9 +517,10 @@ const styles = StyleSheet.create({
     fontSize: 44,
     fontWeight: '800',
     color: '#ffffff',
-    minWidth: 100,
-    textAlign: 'left',
+    textAlign: 'center',
     padding: 0,
+    minWidth: 80,
+    maxWidth: '80%',
   },
   amountFormatted: {
     color: '#5a5a6e',

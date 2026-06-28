@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
+import { Ionicons } from '@expo/vector-icons';
 
 type Transaction = {
   id: string;
@@ -22,21 +23,21 @@ type Transaction = {
   note: string;
 };
 
-const CATEGORY_EMOJIS: Record<string, string> = {
-  Food: '🍔',
-  Transport: '🚗',
-  Shopping: '🛒',
-  Health: '💊',
-  Entertainment: '🎬',
-  Bills: '📱',
-  Rent: '🏠',
-  Education: '📚',
-  Travel: '✈️',
-  Salary: '💼',
-  Freelance: '💰',
-  Investment: '📈',
-  Gift: '🎁',
-  Other: '💵',
+const CATEGORY_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
+  Food: 'fast-food',
+  Transport: 'car',
+  Shopping: 'cart',
+  Health: 'medkit',
+  Entertainment: 'film',
+  Bills: 'receipt',
+  Rent: 'home',
+  Education: 'school',
+  Travel: 'airplane',
+  Salary: 'cash',
+  Freelance: 'laptop',
+  Investment: 'trending-up',
+  Gift: 'gift',
+  Other: 'wallet',
 };
 
 const getGreeting = (): string => {
@@ -70,7 +71,7 @@ export default function Dashboard() {
   const [allTransactions, setAllTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'home' | 'history' | 'ai' | 'admin'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'history' | 'calendar' | 'ai' | 'admin'>('home');
 
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
@@ -139,15 +140,16 @@ export default function Dashboard() {
     setRefreshing(false);
   };
 
-  const handleTabPress = (tab: 'home' | 'history' | 'ai' | 'admin') => {
+  const handleTabPress = (tab: 'home' | 'history' | 'calendar' | 'ai' | 'admin') => {
     setActiveTab(tab);
     if (tab === 'history') router.push('/history' as any);
+    if (tab === 'calendar') router.push('/calendar' as any);
     if (tab === 'ai') router.push('/ai' as any);
     if (tab === 'admin') router.push('/admin' as any);
   };
 
-  const getCategoryEmoji = (category: string): string => {
-    return CATEGORY_EMOJIS[category] || '💳';
+  const getCategoryIcon = (category: string): keyof typeof Ionicons.glyphMap => {
+    return CATEGORY_ICONS[category] || 'card';
   };
 
   const renderTransaction = ({ item }: { item: Transaction }) => (
@@ -164,7 +166,7 @@ export default function Dashboard() {
             },
           ]}
         >
-          <Text style={styles.emojiText}>{getCategoryEmoji(item.category)}</Text>
+          <Ionicons name={getCategoryIcon(item.category)} size={22} color={item.type === 'income' ? '#22c55e' : '#ef4444'} />
         </View>
         <View style={styles.transactionInfo}>
           <Text style={styles.transactionCategory}>{item.category}</Text>
@@ -212,14 +214,14 @@ export default function Dashboard() {
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>{getGreeting()} 👋</Text>
+            <Text style={styles.greeting}>{getGreeting()} <Ionicons name="hand-left" size={24} color="#fbbf24" /></Text>
             <Text style={styles.greetingSub}>Here's your financial overview</Text>
           </View>
           <TouchableOpacity
             style={styles.settingsButton}
             onPress={() => router.push('/admin' as any)}
           >
-            <Text style={styles.settingsIcon}>⚙️</Text>
+            <Ionicons name="settings-outline" size={22} color="#ffffff" />
           </TouchableOpacity>
         </View>
 
@@ -232,11 +234,11 @@ export default function Dashboard() {
           </Text>
           <View style={styles.balanceFooter}>
             <View style={styles.balanceStat}>
-              <Text style={styles.balanceStatArrow}>↑</Text>
+              <Ionicons name="arrow-up" size={16} color="#22c55e" />
               <Text style={styles.balanceStatLabel}>Income</Text>
             </View>
             <View style={styles.balanceStat}>
-              <Text style={[styles.balanceStatArrow, { color: '#ef4444' }]}>↓</Text>
+              <Ionicons name="arrow-down" size={16} color="#ef4444" />
               <Text style={styles.balanceStatLabel}>Expense</Text>
             </View>
           </View>
@@ -245,21 +247,21 @@ export default function Dashboard() {
         {/* Quick Stats Row */}
         <View style={styles.statsRow}>
           <View style={[styles.statCard, styles.statIncome]}>
-            <Text style={styles.statIcon}>📈</Text>
+            <Ionicons name="trending-up" size={20} color="#ffffff" style={{ marginBottom: 6 }} />
             <Text style={styles.statValue}>
               ₹{totalIncome.toLocaleString('en-IN')}
             </Text>
             <Text style={styles.statLabel}>Total Income</Text>
           </View>
           <View style={[styles.statCard, styles.statExpense]}>
-            <Text style={styles.statIcon}>📉</Text>
+            <Ionicons name="trending-down" size={20} color="#ffffff" style={{ marginBottom: 6 }} />
             <Text style={styles.statValue}>
               ₹{totalExpenses.toLocaleString('en-IN')}
             </Text>
             <Text style={styles.statLabel}>Total Expenses</Text>
           </View>
           <View style={[styles.statCard, styles.statMonth]}>
-            <Text style={styles.statIcon}>📅</Text>
+            <Ionicons name="calendar" size={20} color="#ffffff" style={{ marginBottom: 6 }} />
             <Text style={styles.statValue}>
               ₹{monthSpending.toLocaleString('en-IN')}
             </Text>
@@ -274,7 +276,7 @@ export default function Dashboard() {
             onPress={() => router.push('/add')}
             activeOpacity={0.8}
           >
-            <Text style={styles.actionEmoji}>💸</Text>
+            <Ionicons name="arrow-up-circle-outline" size={20} color="#ef4444" />
             <Text style={styles.actionText}>Add Expense</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -282,7 +284,7 @@ export default function Dashboard() {
             onPress={() => router.push('/add')}
             activeOpacity={0.8}
           >
-            <Text style={styles.actionEmoji}>💰</Text>
+            <Ionicons name="arrow-down-circle-outline" size={20} color="#22c55e" />
             <Text style={styles.actionText}>Add Income</Text>
           </TouchableOpacity>
         </View>
@@ -299,7 +301,7 @@ export default function Dashboard() {
 
         {transactions.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyEmoji}>📊</Text>
+            <Ionicons name="stats-chart" size={48} color="#a855f7" style={{ marginBottom: 16 }} />
             <Text style={styles.emptyText}>No transactions yet</Text>
             <Text style={styles.emptySubtext}>
               Start by adding your first expense or income
@@ -320,61 +322,73 @@ export default function Dashboard() {
           style={styles.navItem}
           onPress={() => setActiveTab('home')}
         >
-          <Text style={[styles.navIcon, activeTab === 'home' && styles.navActive]}>
-            🏠
-          </Text>
-          <Text
-            style={[styles.navLabel, activeTab === 'home' && styles.navLabelActive]}
-          >
+          <Ionicons
+            name={activeTab === 'home' ? 'home' : 'home-outline'}
+            size={22}
+            color={activeTab === 'home' ? '#a855f7' : 'rgba(255,255,255,0.5)'}
+            style={styles.navIcon}
+          />
+          <Text style={[styles.navLabel, activeTab === 'home' && styles.navLabelActive]}>
             Home
           </Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => handleTabPress('history')}
         >
-          <Text
-            style={[styles.navIcon, activeTab === 'history' && styles.navActive]}
-          >
-            📋
-          </Text>
-          <Text
-            style={[
-              styles.navLabel,
-              activeTab === 'history' && styles.navLabelActive,
-            ]}
-          >
+          <Ionicons
+            name={activeTab === 'history' ? 'list' : 'list-outline'}
+            size={22}
+            color={activeTab === 'history' ? '#a855f7' : 'rgba(255,255,255,0.5)'}
+            style={styles.navIcon}
+          />
+          <Text style={[styles.navLabel, activeTab === 'history' && styles.navLabelActive]}>
             History
           </Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navItem}
+          onPress={() => handleTabPress('calendar')}
+        >
+          <Ionicons
+            name={activeTab === 'calendar' ? 'calendar' : 'calendar-outline'}
+            size={22}
+            color={activeTab === 'calendar' ? '#a855f7' : 'rgba(255,255,255,0.5)'}
+            style={styles.navIcon}
+          />
+          <Text style={[styles.navLabel, activeTab === 'calendar' && styles.navLabelActive]}>
+            Calendar
+          </Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => handleTabPress('ai')}
         >
-          <Text style={[styles.navIcon, activeTab === 'ai' && styles.navActive]}>
-            🤖
-          </Text>
-          <Text
-            style={[styles.navLabel, activeTab === 'ai' && styles.navLabelActive]}
-          >
+          <Ionicons
+            name={activeTab === 'ai' ? 'planet' : 'planet-outline'}
+            size={22}
+            color={activeTab === 'ai' ? '#a855f7' : 'rgba(255,255,255,0.5)'}
+            style={styles.navIcon}
+          />
+          <Text style={[styles.navLabel, activeTab === 'ai' && styles.navLabelActive]}>
             AI Insights
           </Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => handleTabPress('admin')}
         >
-          <Text
-            style={[styles.navIcon, activeTab === 'admin' && styles.navActive]}
-          >
-            ⚙️
-          </Text>
-          <Text
-            style={[
-              styles.navLabel,
-              activeTab === 'admin' && styles.navLabelActive,
-            ]}
-          >
+          <Ionicons
+            name={activeTab === 'admin' ? 'settings' : 'settings-outline'}
+            size={22}
+            color={activeTab === 'admin' ? '#a855f7' : 'rgba(255,255,255,0.5)'}
+            style={styles.navIcon}
+          />
+          <Text style={[styles.navLabel, activeTab === 'admin' && styles.navLabelActive]}>
             Admin
           </Text>
         </TouchableOpacity>

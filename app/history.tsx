@@ -16,6 +16,7 @@ import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabase';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
+import { Ionicons } from '@expo/vector-icons';
 
 type Transaction = {
   id: string;
@@ -26,27 +27,27 @@ type Transaction = {
   note: string;
 };
 
-const CATEGORY_EMOJIS: Record<string, string> = {
-  food: '🍔',
-  groceries: '🛒',
-  transport: '🚗',
-  shopping: '🛍️',
-  entertainment: '🎬',
-  health: '💊',
-  education: '📚',
-  bills: '💡',
-  rent: '🏠',
-  salary: '💰',
-  freelance: '💻',
-  investment: '📈',
-  gift: '🎁',
-  travel: '✈️',
-  fitness: '🏋️',
-  subscriptions: '📱',
-  recharge: '📞',
-  fuel: '⛽',
-  clothing: '👕',
-  other: '📝',
+const CATEGORY_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
+  food: 'fast-food',
+  groceries: 'cart',
+  transport: 'car',
+  shopping: 'cart',
+  entertainment: 'film',
+  health: 'medkit',
+  education: 'school',
+  bills: 'receipt',
+  rent: 'home',
+  salary: 'cash',
+  freelance: 'laptop',
+  investment: 'trending-up',
+  gift: 'gift',
+  travel: 'airplane',
+  fitness: 'barbell',
+  subscriptions: 'phone-portrait',
+  recharge: 'flash',
+  fuel: 'water',
+  clothing: 'shirt',
+  other: 'wallet',
 };
 
 const MONTHS = [
@@ -54,9 +55,9 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
 
-const getEmoji = (category: string): string => {
+const getCategoryIcon = (category: string): keyof typeof Ionicons.glyphMap => {
   const key = category.toLowerCase().trim();
-  return CATEGORY_EMOJIS[key] || '📝';
+  return CATEGORY_ICONS[key] || 'card';
 };
 
 const formatDate = (dateString: string): string => {
@@ -175,8 +176,15 @@ export default function HistoryScreen() {
   const renderTransaction = ({ item }: { item: Transaction }) => (
     <View style={styles.transactionCard}>
       <View style={styles.transactionLeft}>
-        <View style={styles.emojiContainer}>
-          <Text style={styles.emoji}>{getEmoji(item.category)}</Text>
+        <View
+          style={[
+            styles.emojiContainer,
+            {
+              backgroundColor: item.type === 'income' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+            },
+          ]}
+        >
+          <Ionicons name={getCategoryIcon(item.category)} size={22} color={item.type === 'income' ? '#4caf50' : '#ff4d4d'} />
         </View>
         <View style={styles.transactionInfo}>
           <Text style={styles.transactionCategory}>{item.category}</Text>
@@ -259,7 +267,7 @@ export default function HistoryScreen() {
 
       {/* Search Bar */}
       <View style={styles.searchContainer}>
-        <Text style={styles.searchIcon}>🔍</Text>
+        <Ionicons name="search" size={18} color="#888" style={{ marginRight: 8 }} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search by category or note..."
@@ -287,7 +295,7 @@ export default function HistoryScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.replace('/')} style={styles.backButton}>
-          <Text style={styles.backText}>← Back</Text>
+          <Ionicons name="arrow-back" size={24} color="#6c63ff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>History</Text>
         <TouchableOpacity onPress={exportCSV} style={styles.exportButton}>
@@ -298,13 +306,13 @@ export default function HistoryScreen() {
       {/* Month/Year Selector */}
       <View style={styles.monthSelector}>
         <TouchableOpacity onPress={() => changeMonth(-1)} style={styles.monthArrow}>
-          <Text style={styles.monthArrowText}>‹</Text>
+          <Ionicons name="chevron-back" size={24} color="#6c63ff" />
         </TouchableOpacity>
         <Text style={styles.monthText}>
           {MONTHS[selectedMonth]} {selectedYear}
         </Text>
         <TouchableOpacity onPress={() => changeMonth(1)} style={styles.monthArrow}>
-          <Text style={styles.monthArrowText}>›</Text>
+          <Ionicons name="chevron-forward" size={24} color="#6c63ff" />
         </TouchableOpacity>
       </View>
 
@@ -321,7 +329,7 @@ export default function HistoryScreen() {
           ListHeaderComponent={ListHeader}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyEmoji}>📭</Text>
+              <Ionicons name="folder-open-outline" size={48} color="#555" style={{ marginBottom: 16 }} />
               <Text style={styles.emptyText}>No transactions found</Text>
               <Text style={styles.emptySubtext}>
                 {searchQuery
