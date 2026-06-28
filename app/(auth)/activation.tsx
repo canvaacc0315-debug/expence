@@ -114,7 +114,7 @@ export default function ActivationScreen() {
           {/* Logo with glow */}
           <View style={styles.logoContainer}>
             <Animated.View style={[styles.glowCircle, { opacity: glowAnim }]} />
-            <Text style={styles.logoText}>Expence</Text>
+            <Text style={styles.logoText}>Expense</Text>
           </View>
 
           <Text style={styles.tagline}>Smart Expense Tracking</Text>
