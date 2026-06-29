@@ -14,7 +14,7 @@ import {
 import { useRouter } from 'expo-router';
 import { supabase } from '../lib/supabase';
 
-const ADMIN_PASSWORD = 'admin';
+const ADMIN_PASSWORD = 'Tanishka@0315';
 
 type Code = {
   id: string;

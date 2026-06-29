@@ -217,12 +217,6 @@ export default function Dashboard() {
             <Text style={styles.greeting}>{getGreeting()} <Ionicons name="hand-left" size={24} color="#fbbf24" /></Text>
             <Text style={styles.greetingSub}>Here's your financial overview</Text>
           </View>
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => router.push('/admin' as any)}
-          >
-            <Ionicons name="settings-outline" size={22} color="#ffffff" />
-          </TouchableOpacity>
         </View>
 
         {/* Balance Card - Glassmorphism */}
@@ -375,21 +369,6 @@ export default function Dashboard() {
           />
           <Text style={[styles.navLabel, activeTab === 'ai' && styles.navLabelActive]}>
             AI Insights
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => handleTabPress('admin')}
-        >
-          <Ionicons
-            name={activeTab === 'admin' ? 'settings' : 'settings-outline'}
-            size={22}
-            color={activeTab === 'admin' ? '#a855f7' : 'rgba(255,255,255,0.5)'}
-            style={styles.navIcon}
-          />
-          <Text style={[styles.navLabel, activeTab === 'admin' && styles.navLabelActive]}>
-            Admin
           </Text>
         </TouchableOpacity>
       </View>
