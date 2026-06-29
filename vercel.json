@@ -1,8 +1,7 @@
 {
-  "buildCommand": "npx expo export --platform web",
+  "buildCommand": "npx expo export -p web",
   "outputDirectory": "dist",
-  "cleanUrls": true,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
